@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="FlixTubes.UI.BoxArquivoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FlixTubes"
+             mc:Ignorable="d">
+    <Grid x:Name="grid" Height="295" Width="175"  Margin="5,9,5,9" SnapsToDevicePixels="True">
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="1" ScaleY="1" />
+        </Grid.RenderTransform>
+        <Grid.RenderTransformOrigin>
+            <Point X="0.5" Y="0.5" />
+        </Grid.RenderTransformOrigin>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="51" Opacity="0.5"/>
+        </Grid.Effect>
+        <Grid.Background>
+            <ImageBrush ImageSource="/FlixTubes;component/Resources/box/capa.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
+        <Grid.OpacityMask>
+            <VisualBrush Stretch="None">
+                <VisualBrush.Visual>
+                    <Border  Height="300" Width="180" CornerRadius="5" Background="Black"></Border>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Grid.OpacityMask>
+        <Grid.Style>
+            <Style TargetType="{x:Type Grid}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Setter Property="Opacity" Value="0.7"></Setter>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="1"></Setter>
+                    </Trigger>
+                </Style.Triggers>
+
+            </Style>
+        </Grid.Style>
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <!-- Exibe o grdBotoes -->
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Visibility)" Storyboard.TargetName="grdBotoes">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </BeginStoryboard>
+                <!-- Aumenta o tamanho -->
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                             To="1.1" Duration="0:0:0.1" />
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                             To="1.1" Duration="0:0:0.1" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <!-- Oculta o grdBotoes -->
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Visibility)" Storyboard.TargetName="grdBotoes">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </BeginStoryboard>
+                <!-- Reduz o tamanho -->
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                 To="1.0" Duration="0:0:0:0.1" />
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                 To="1.0" Duration="0:0:0:0.1" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
+
+        <Grid x:Name="grdAbrir" Opacity="1" MouseLeftButtonDown="grid_MouseLeftButtonDown" Cursor="Hand">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#00000000" Offset="0.776" />
+                    <GradientStop Color="Black" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+
+        <TextBlock x:Name="txtNomeFilme" Text="Sem Nome das asd as" Foreground="White" Width="160"  HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="5" IsHitTestVisible="False" >
+            <TextBlock.Effect>
+                <DropShadowEffect BlurRadius="1" Direction="315" ShadowDepth="2" Opacity="0.5"/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <Grid x:Name="grdBotoes" Visibility="Hidden">
+            <Image x:Name="imgBtnExcluir" Source="/FlixTubes;component/Resources/box/bin.png" Height="24" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" MouseLeftButtonDown="imgBtnExcluir_MouseLeftButtonDown" >
+                <Image.Effect>
+                    <DropShadowEffect ShadowDepth="1" />
+                </Image.Effect>
+            </Image>
+            <Image x:Name="imgBtnEditar" Source="/FlixTubes;component/Resources/box/pen.png" Height="24" Width="24" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" MouseLeftButtonDown="imgBtnEditar_MouseLeftButtonDown" >
+                <Image.Effect>
+                    <DropShadowEffect ShadowDepth="1" />
+                </Image.Effect>
+            </Image>
+        </Grid>
+
+    </Grid>
+
+</UserControl>

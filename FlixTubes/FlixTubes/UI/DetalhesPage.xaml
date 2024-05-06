@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="FlixTubes.UI.DetalhesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FlixTubes" 
+             xmlns:web="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             mc:Ignorable="d" >
+    <Grid MinHeight="450" MinWidth="800">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="101*" />
+            <ColumnDefinition Width="59*" />
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="grdImagem" Grid.Column="1">
+            <Grid.Background>
+                <ImageBrush ImageSource="/FlixTubes;component/Resources/box/capa.jpg" Stretch="UniformToFill" />
+            </Grid.Background>
+        </Grid>
+        <Grid Grid.ColumnSpan="2" Grid.RowSpan="3">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="1,0" StartPoint="0,0">
+                    <GradientStop Color="#F2000000" Offset="0"/>
+                    <GradientStop Color="#B2000000" Offset="0.4"/>
+                    <GradientStop Color="#00000000" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+        <Grid x:Name="grdBotoes" Grid.Column="1">
+            <Image x:Name="btnFechar" Source="/FlixTubes;component/Resources/detalhes/close.png" Width="30" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Stretch="UniformToFill" Margin="10" MouseLeftButtonDown="btnFechar_MouseLeftButtonDown">
+                <Image.Effect>
+                    <DropShadowEffect BlurRadius="2" ShadowDepth="1"/>
+                </Image.Effect>
+            </Image>
+            <Image x:Name="btnPlay"  Source="/FlixTubes;component/Resources/detalhes/play-button.png" Width="128" Height="128" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" Margin="10" MouseLeftButtonDown="btnPlay_MouseLeftButtonDown">
+                <Image.Effect>
+                    <DropShadowEffect BlurRadius="2" ShadowDepth="2"/>
+                </Image.Effect>
+            </Image>
+        </Grid>
+        <Grid x:Name="grdDados" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="linhaTrailer" Height="70*" />
+                <RowDefinition Height="70" />
+                <RowDefinition Height="30*" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="grdTrailer" Visibility="Visible">
+                <Image Source="/FlixTubes;component/Resources/box/capa.jpg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <web:WebView2 x:Name="webView2" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                <!-- Elemento de sobreposição -->
+                <Border x:Name="overlay" Background="Black" Opacity="0.5" Visibility="Collapsed"/>
+            </Grid>
+            <TextBlock x:Name="txtTitulo" Grid.Column="0" Grid.Row="1" Text="Titulo Arquivo" Foreground="White" FontSize="30" Margin="10,0,0,0" />
+            <TextBlock  x:Name="txtSinopse"  Grid.Column="0" Grid.Row="2" Text="Descricao do arquivo" Foreground="White" FontSize="14"  Margin="10" />
+        </Grid>
+    </Grid>
+</UserControl>
