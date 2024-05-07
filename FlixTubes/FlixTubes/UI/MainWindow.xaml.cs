@@ -49,7 +49,6 @@ namespace FlixTubes.UI
 
             editarWindow.CancelarHandler += FecharEditar_Handler;
             editarWindow.SalvarHandler += FecharEditar_Handler;
-            detalhesWindow.FecharHandler += FecharDetalhes_Handler;
 
 
             _dirSelecionado = BuscarDirNoRegistro("FILMES");
@@ -59,7 +58,10 @@ namespace FlixTubes.UI
                 CarregarListaFilmes();
             }
 
+
             LinkMenu_MouseLeftButtonDown(btnFilmes, null);
+
+            grdDetalhes.Visibility = Visibility.Collapsed;
         }
 
 
@@ -303,6 +305,7 @@ namespace FlixTubes.UI
         private void FecharDetalhes_Handler(object? sender, EventArgs e)
         {
             grdDetalhes.Visibility = Visibility.Collapsed;
+            grdDetalhes.Children.Clear();
         }
 
         private void AbrirEdicao_Handler(object? sender, EventArgs e)
@@ -328,8 +331,12 @@ namespace FlixTubes.UI
             if (box != null)
             {
                 grdDetalhes.Visibility = Visibility.Visible;
-                detalhesWindow._boxFilmeSelecionado = box;
-                detalhesWindow.CarregarDados();
+                DetalhesPage detalhesPage = new DetalhesPage();
+                detalhesPage._boxFilmeSelecionado = box;
+                detalhesPage.CarregarDados(); detalhesPage.Margin = new Thickness(50);
+                detalhesPage.FecharHandler += FecharDetalhes_Handler;
+                grdDetalhes.Children.Add(detalhesPage);
+
             }
         }
 

@@ -30,7 +30,7 @@
             <Grid x:Name="AreaEditInfo" Grid.Column="0" Grid.Row="1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,0,0,0">
-                        <TextBlock Text="Arquivo" Margin="30,30,30,5" Foreground="#FFC8C8C8" FontSize="15" />
+                        <TextBlock Text="Arquivo" Margin="30,25,30,5" Foreground="#FFC8C8C8" FontSize="15" />
                         <TextBox x:Name="txbArquivo" Margin="30,0,30,0" Height="30" TextAlignment="Left" TextWrapping="NoWrap" Text="[nomearquivoFilme]" VerticalAlignment="Top" FontSize="15" Padding="0,3,0,0">
                             <TextBox.Resources>
                                 <Style TargetType="{x:Type Border}">
@@ -38,7 +38,14 @@
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBlock Text="Nome Filme" Margin="30,30,30,5" Foreground="#FFC8C8C8" FontSize="15" />
+                        <Grid Margin="30,25,30,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                        <TextBlock Text="Nome" Foreground="#FFC8C8C8" FontSize="15" />
+                            <Image x:Name="btnPesquisarFilme" Grid.Column="1" Source="/FlixTubes;component/Resources/editar/google.png" Height="30" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,0,0"  MouseLeftButtonDown="btnPesquisarFilme_MouseLeftButtonDown"/>
+                        </Grid>
                         <TextBox x:Name="txbNome" Margin="30,0,30,0" Height="30" TextAlignment="Left" TextWrapping="NoWrap" Text="[nome]" VerticalAlignment="Top" FontSize="15" Padding="0,3,0,0">
                             <TextBox.Resources>
                                 <Style TargetType="{x:Type Border}">
@@ -46,15 +53,7 @@
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBlock Text="ID Trailer Youtube" Margin="30,30,30,5" Foreground="#FFC8C8C8" FontSize="15" />
-                        <TextBox x:Name="txbTrailer" Margin="30,0,30,0" Height="30" TextAlignment="Left" TextWrapping="NoWrap" Text="[url trailer Filme]" VerticalAlignment="Top" FontSize="15" Padding="0,3,0,0">
-                            <TextBox.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="10"/>
-                                </Style>
-                            </TextBox.Resources>
-                        </TextBox>
-                        <TextBlock Text="Sinopse" Margin="30,30,30,5" Foreground="#FFC8C8C8" FontSize="15"  />
+                        <TextBlock Text="Sinopse" Margin="30,25,30,5" Foreground="#FFC8C8C8" FontSize="15"  />
                         <TextBox x:Name="txbSinopse" Margin="30,0,30,0" Height="100" TextAlignment="Left" Text="[Descricao Arquivo]" VerticalAlignment="Top" FontSize="15" Padding="0,3,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True">
                             <TextBox.Resources>
                                 <Style TargetType="{x:Type Border}">
@@ -62,6 +61,21 @@
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
+                        <TextBlock Text="ID Trailer Youtube" Margin="30,25,30,5" Foreground="#FFC8C8C8" FontSize="15" />
+                        <Grid Margin="30,0,30,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="txbTrailer" Height="30" TextAlignment="Left" TextWrapping="NoWrap" Text="[url trailer Filme]" VerticalAlignment="Top" FontSize="15" Padding="0,3,0,0">
+                                <TextBox.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="10"/>
+                                    </Style>
+                                </TextBox.Resources>
+                            </TextBox>
+                            <Image x:Name="btnPesquisarYoutube" Grid.Column="1" Source="/FlixTubes;component/Resources/editar/google.png" Height="30" Width="30" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,0,0"  MouseLeftButtonDown="btnPesquisarYoutube_MouseLeftButtonDown"/>
+                        </Grid>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
@@ -100,6 +114,6 @@
                     </Button.Resources>
                 </Button>
             </Grid>
-        </Grid>       
+        </Grid>
     </Grid>
 </UserControl>

@@ -39,18 +39,16 @@
         </Grid>
         <Grid x:Name="grdDados" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition x:Name="linhaTrailer" Height="70*" />
-                <RowDefinition Height="70" />
-                <RowDefinition Height="30*" />
+                <RowDefinition x:Name="linhaTrailer" Height="65*" />
+                <RowDefinition Height="35*" />
             </Grid.RowDefinitions>
-            <Grid x:Name="grdTrailer" Visibility="Visible">
-                <Image Source="/FlixTubes;component/Resources/box/capa.jpg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                <web:WebView2 x:Name="webView2" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                <!-- Elemento de sobreposição -->
-                <Border x:Name="overlay" Background="Black" Opacity="0.5" Visibility="Collapsed"/>
+            <Grid x:Name="grdTrailer">
+                <web:WebView2 x:Name="webView2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             </Grid>
-            <TextBlock x:Name="txtTitulo" Grid.Column="0" Grid.Row="1" Text="Titulo Arquivo" Foreground="White" FontSize="30" Margin="10,0,0,0" />
-            <TextBlock  x:Name="txtSinopse"  Grid.Column="0" Grid.Row="2" Text="Descricao do arquivo" Foreground="White" FontSize="14"  Margin="10" />
+            <TextBlock x:Name="txtTitulo" Grid.Column="0" Grid.Row="0" Text="Titulo Arquivo" Foreground="White" FontSize="30" Margin="10,0,0,0" />
+            <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <TextBlock  x:Name="txtSinopse"   Text="Descricao do arquivo" Foreground="White" FontSize="18"  Margin="10" TextWrapping="Wrap" />
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

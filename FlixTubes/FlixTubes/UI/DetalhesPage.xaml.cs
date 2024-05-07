@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,19 +25,11 @@ namespace FlixTubes.UI
 
         public BoxArquivoView? _boxFilmeSelecionado;
 
+        private InfosFilme? _infosFilme;
+
         public DetalhesPage()
         {
             InitializeComponent();
-
-            // Injeta um script JavaScript para detectar quando a tela final é exibida, removida e enviar uma mensagem
-            webView2.WebMessageReceived += (sender, args) =>
-            {
-                // Verifica se a mensagem recebida é sobre a tela final sendo removida
-                if (args.TryGetWebMessageAsString() == "videoEnded")
-                {
-                    grdTrailer.Visibility = Visibility.Collapsed;
-                }
-            };
         }
 
         public void CarregarDados()
@@ -50,10 +43,11 @@ namespace FlixTubes.UI
             string dirArqFilme = _boxFilmeSelecionado.FileInfo.DirectoryName ?? "";
             string NomeArqFilme = System.IO.Path.GetFileNameWithoutExtension(_boxFilmeSelecionado.FileInfo.Name);
 
-            InfosFilme? infosFilme = InfosServicos.ReadFromJsonFile(dirArqFilme, NomeArqFilme) ?? new InfosFilme();
+            _infosFilme = InfosServicos.ReadFromJsonFile(dirArqFilme, NomeArqFilme) ?? new InfosFilme();
 
-            txtTitulo.Text = infosFilme.Nome ?? NomeArqFilme;
-            txtSinopse.Text = infosFilme.Sinopse;
+            txtTitulo.Text = _infosFilme.Nome ?? NomeArqFilme;
+            txtTitulo.Visibility = Visibility.Visible;
+            txtSinopse.Text = _infosFilme.Sinopse;
 
             //Carrega a imagem
             FileInfo fileInfo = new FileInfo(System.IO.Path.Combine(dirArqFilme, NomeArqFilme + ".jpg")); //Mudar!
@@ -68,64 +62,125 @@ namespace FlixTubes.UI
                 CarregarImagemNoGrid("pack://application:,,,/Resources/box/capa.jpg");
             }
 
-            CarregarPlayerDoYouTubeAsync(infosFilme.IDVideoYoutube);
+            grdTrailer.Visibility = Visibility.Collapsed;
+            CarregarPlayerDoYouTubeAsync();
         }
 
-        private async void CarregarPlayerDoYouTubeAsync(string? videoId)
+        private async void CarregarPlayerDoYouTubeAsync()
         {
-            if (string.IsNullOrEmpty(videoId)) return;
+            if (_infosFilme == null || string.IsNullOrEmpty(_infosFilme.IDVideoYoutube)) return;
+
+            txtTitulo.Visibility = Visibility.Hidden; //pq tem titulo
 
             // Inicializa o WebView2
+
             await webView2.EnsureCoreWebView2Async();
 
-            // Limpa os cookies
-            webView2.CoreWebView2.CookieManager.DeleteAllCookies();
+            if (webView2.CoreWebView2 == null) return;
 
             // URL da página de incorporação do YouTube com o ID do vídeo
-            string embedUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1&loop=1&rel=0&showinfo=0";
+            string embedUrl = $"https://www.youtube.com/embed/{_infosFilme.IDVideoYoutube}?autoplay=1&loop=1&rel=0&showinfo=0";
 
             // Carrega a página de incorporação do YouTube no WebView2
             webView2.CoreWebView2.Navigate(embedUrl);
+            webView2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+        }
 
-            await Task.Run(() =>
-            {
-                Thread.Sleep(1000);
+        private async void CoreWebView2_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            // Injeta um script JavaScript para detectar quando o vídeo termina e enviar uma mensagem
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+              document.querySelector('video').addEventListener('ended', function() {
+                    var thumbnailContainer = document.getElementById('thumbnailContainer');
+                    if (thumbnailContainer) {
+                           thumbnailContainer.style.display = 'block'; // Exibe a miniatura e o ícone quando o vídeo termina
+                    }
+                    //window.chrome.webview.postMessage('videoEnded'); //envia mensagem
+              });");
 
-                Dispatcher.Invoke(async () =>
-                 {
+            // Injeta um script JavaScript para ocultar os controles do player
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+                var style = document.createElement('style');
+                style.textContent = '.ytp-chrome-top, .ytp-chrome-bottom { display: none !important; }';
+                document.head.appendChild(style);");
 
-                     // Injeta um script JavaScript para acionar a reprodução automática
-                     await webView2.CoreWebView2.ExecuteScriptAsync("document.querySelector('video').play();");
+            // Injeta um script JavaScript para ocultar o elemento ytp-pause-overlay-container
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+                var pauseOverlayContainer = document.querySelector('.ytp-pause-overlay-container');
+                if (pauseOverlayContainer) {
+                    pauseOverlayContainer.style.display = 'none';
+                }");
 
-                     // Injeta um script JavaScript para detectar quando o vídeo termina e enviar uma mensagem
-                     await webView2.CoreWebView2.ExecuteScriptAsync(@"
-                        document.querySelector('video').addEventListener('ended', function() {
-                        window.chrome.webview.postMessage('videoEnded');
-                        });
-                    ");
+            // Injeta um script JavaScript para ocultar o elem,ento html5-endscreen
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+                var style = document.createElement('style');
+                style.textContent = '.html5-endscreen { display: none !important; }';
+                document.head.appendChild(style);");
 
+            // Injeta um script JavaScript para ocultar a miniatura do vídeo
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+                 var thumbnailContainer = document.createElement('div');
+                 thumbnailContainer.id = 'thumbnailContainer'; // Define um ID para o contêiner da miniatura para referência posterior
+                 thumbnailContainer.style.position = 'absolute'; // Define a posição relativa para o contêiner
+                 thumbnailContainer.style.width = '100%'; /* Redimensiona a largura para 100% do WebView2 */
+                 thumbnailContainer.style.height = '100%'; /* Mantém a proporção da altura */
+                 thumbnailContainer.style.top = '0';
+                 thumbnailContainer.style.left = '0';
+                 document.body.appendChild(thumbnailContainer);
 
-                     // Injeta um script JavaScript para ocultar os controles do player
-                     await webView2.CoreWebView2.ExecuteScriptAsync(@"
-        var style = document.createElement('style');
-        style.textContent = '.ytp-chrome-top, .ytp-chrome-bottom { display: none !important; }';
-        document.head.appendChild(style);
-    ");
+                 var thumbnailImage = document.createElement('img');
+                 thumbnailImage.id = 'thumbnailImage'; // Define um ID para a miniatura para referência posterior
+                 thumbnailImage.src = 'https://i.ytimg.com/vi/" + _infosFilme?.IDVideoYoutube + @"/maxresdefault.jpg';
+                 
+                 thumbnailImage.style.position = 'absolute';
+                 thumbnailImage.style.top = '0';
+                 thumbnailImage.style.left = '0';
+                 thumbnailImage.style.width = '100%'; /* Redimensiona a largura para 100% do contêiner */
+                 thumbnailImage.style.height = 'auto'; /* Mantém a proporção da altura */
+                 thumbnailContainer.style.display = 'none';
+                 thumbnailContainer.appendChild(thumbnailImage);
 
-                     // Injeta um script JavaScript para ocultar o elemento ytp-pause-overlay-container
-                     await webView2.CoreWebView2.ExecuteScriptAsync(@"
-            var pauseOverlayContainer = document.querySelector('.ytp-pause-overlay-container');
-            if (pauseOverlayContainer) {
-                pauseOverlayContainer.style.display = 'none';
-            }
-        ");
+                 var playIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                 playIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                 playIcon.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                 playIcon.setAttribute('width', '64');
+                 playIcon.setAttribute('height', '64');
+                 playIcon.setAttribute('viewBox', '0 0 64 64');
+                 playIcon.style.position = 'absolute';
+                 playIcon.style.top = '50%'; // Posiciona verticalmente no meio
+                 playIcon.style.left = '50%'; // Posiciona horizontalmente no meio
+                 playIcon.style.transform = 'translate(-50%, -50%)'; // Centraliza o ícone
 
+                 var playPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                 playPath.setAttribute('d', 'M14 7v50l36-25z');
+                 playPath.setAttribute('fill', 'white');
+                 playIcon.appendChild(playPath);
 
-                     grdTrailer.Visibility = Visibility.Visible;
-                 });
+                 playIcon.style.cursor = 'pointer'; // Altera o cursor para indicar que é clicável
+                 playIcon.onclick = function() {
+                     document.querySelector('video').play(); // Inicia o vídeo quando o ícone é clicado
+                     thumbnailContainer.style.display = 'none'; // Oculta a miniatura e o ícone após clicar
+                 };
+                thumbnailContainer.appendChild(playIcon);");
 
+            // Injeta o titulo
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+                 var overlayText = document.createElement('div');
+                 overlayText.innerText = '" + txtTitulo.Text + @"';
+                 overlayText.style.position = 'absolute';
+                 overlayText.style.top = '20px'; /* Distância do topo */
+                 overlayText.style.left = '20px'; /* Distância da esquerda */
+                 overlayText.style.color = 'white'; /* Cor do texto */
+                 overlayText.style.textShadow = '2px 2px 2px rgba(0, 0, 0, 0.5)'; /* Sombra do texto */
+                 overlayText.style.fontSize = '40px'; /* Tamanho da fonte */
+                 overlayText.style.fontWeight = 'bold'; /* Peso da fonte */
+                 document.body.appendChild(overlayText);");
 
-            });
+            // Injeta um script JavaScript para acionar a reprodução automática
+            await webView2.CoreWebView2.ExecuteScriptAsync(@"
+                 document.querySelector('video').play(); ");
+
+            grdTrailer.Visibility = Visibility.Visible;
         }
 
         private void CarregarImagemNoGrid(string dirImagem)
@@ -139,40 +194,37 @@ namespace FlixTubes.UI
             grdImagem.Background = new ImageBrush(bitmap) { Stretch = Stretch.UniformToFill };
         }
 
-        private async void btnFechar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void btnFechar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (webView2?.CoreWebView2 != null)
             {
-                // Injeta um script JavaScript para pausar o vídeo
-                await webView2.CoreWebView2.ExecuteScriptAsync(@"
-            var videoElement = document.querySelector('video');
-            if (videoElement) {
-                videoElement.pause();
-            }
-        ");
+                PararVideoYoutube();
             }
 
-            grdTrailer.Visibility = Visibility.Collapsed;
             _boxFilmeSelecionado = null;
             FecharHandler?.Invoke(this, e);
         }
 
-        private async void btnPlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void btnPlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (_boxFilmeSelecionado == null) return;
 
+            PararVideoYoutube();
+
+            _boxFilmeSelecionado.PlayFilme();
+        }
+
+        async void PararVideoYoutube()
+        {
             if (webView2?.CoreWebView2 != null)
             {
                 // Injeta um script JavaScript para pausar o vídeo
                 await webView2.CoreWebView2.ExecuteScriptAsync(@"
-            var videoElement = document.querySelector('video');
-            if (videoElement) {
-                videoElement.pause();
+                    var videoElement = document.querySelector('video');
+                    if (videoElement) {
+                        videoElement.pause();
+                    }");
             }
-        ");
-            }
-
-            _boxFilmeSelecionado.PlayFilme();
         }
     }
 }

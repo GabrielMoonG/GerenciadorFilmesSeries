@@ -40,7 +40,44 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>        
+        </Style>
+
+
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="#505050"/>
+            <Setter Property="BorderBrush" Value="#505050"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid x:Name="Bg" SnapsToDevicePixels="true" Margin="-15,0,15,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                                <RowDefinition Height="0.00001*"/>
+                                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Row="1" CornerRadius="10"/>
+                            <!--<RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}" Margin="0,0,0,-20">    
+                                <Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
+                            </RepeatButton>-->
+                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource RepeatButtonTransparent}" HorizontalAlignment="Left" Width="17"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ScrollBarThumbVertical}" Margin="2"/>
+                                </Track.Thumb>
+                            </Track>
+                            <!--<RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButton}"  Margin="0,-20,0,0">    
+                                <Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
+                            </RepeatButton>-->
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -91,44 +128,7 @@
                 </Grid>
                 <Image x:Name="imgRecarregarFilmes" Source="/FlixTubes;component/Resources/reload.png" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" MouseLeftButtonDown="imgRecarregarFilmes_MouseLeftButtonDown" Cursor="Hand" />
             </Grid>
-            <ScrollViewer Margin="0" Grid.Row="1" BorderThickness="2" VerticalScrollBarVisibility="Auto">
-                <ScrollViewer.Resources>
-                    <Style TargetType="{x:Type ScrollBar}">
-                        <Setter Property="Background" Value="#505050"/>
-                        <Setter Property="BorderBrush" Value="#505050"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ScrollBar}">
-                                    <Grid x:Name="Bg" SnapsToDevicePixels="true" Margin="-15,0,15,0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
-                                            <RowDefinition Height="0.00001*"/>
-                                            <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
-                                        </Grid.RowDefinitions>
-                                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Row="1" CornerRadius="10"/>
-                                        <!--<RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}" Margin="0,0,0,-20">    
-                                <Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
-                            </RepeatButton>-->
-                                        <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource RepeatButtonTransparent}" HorizontalAlignment="Left" Width="17"/>
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
-                                            </Track.IncreaseRepeatButton>
-                                            <Track.Thumb>
-                                                <Thumb Style="{StaticResource ScrollBarThumbVertical}" Margin="2"/>
-                                            </Track.Thumb>
-                                        </Track>
-                                        <!--<RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButton}"  Margin="0,-20,0,0">    
-                                <Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
-                            </RepeatButton>-->
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ScrollViewer.Resources>
+            <ScrollViewer Margin="0" Grid.Row="1" BorderThickness="2" VerticalScrollBarVisibility="Auto">              
                 <WrapPanel x:Name="panelFilmes" MinWidth="1180" Orientation="Horizontal" Margin="20">
                     <views:BoxArquivoView />
                 </WrapPanel>
@@ -139,7 +139,6 @@
             </Grid>
         </Grid>
         <Grid x:Name="grdDetalhes" Grid.Row="1" Background="#B2000000" Visibility="Collapsed">
-            <views:DetalhesPage x:Name="detalhesWindow" Margin="50" />
         </Grid>
         <Grid x:Name="grdConfig" Grid.Row="1" Visibility="Hidden">
             <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">

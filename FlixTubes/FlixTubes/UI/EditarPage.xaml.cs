@@ -1,6 +1,7 @@
 ﻿using FlixTubes.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -12,6 +13,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -74,9 +76,7 @@ namespace FlixTubes.UI
             OpenFileDialog op = new OpenFileDialog();
 
             op.Title = "Selecione a imagem";
-            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
-              "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
-              "Portable Network Graphic (*.png)|*.png";
+            op.Filter = "Arquivos de imagem|*.jpg;*.jpeg;*.png;*.webp";
 
             DialogResult result = op.ShowDialog();
 
@@ -107,6 +107,16 @@ namespace FlixTubes.UI
         private void btnPesquisarCapa_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             PesquisaCapaWeb();
+        }
+
+        private void btnPesquisarYoutube_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            PesquisaYoutubeWeb();
+        }
+
+        private void btnPesquisarFilme_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            PesquisaFilmeSinopseWeb();
         }
 
         #endregion
@@ -165,11 +175,52 @@ namespace FlixTubes.UI
         {
             if (_filmeSelecionado == null || _filmeSelecionado.FileInfo == null) return;
 
+            string valor = string.IsNullOrEmpty(txbNome.Text.Replace(" ", "")) ? System.IO.Path.GetFileNameWithoutExtension(_filmeSelecionado.FileInfo.Name) : txbNome.Text;
+
             //da prioridade pro nome do filme mas se for nulo pesquisa pelo nome do arquivo
-            string termoPesquisa = $"Capa {txbNome.Text ?? System.IO.Path.GetFileNameWithoutExtension(_filmeSelecionado.FileInfo.Name)}";
+            string termoPesquisa = $"Capa {valor}";
 
             // Construa a URL de pesquisa do Google Imagens com o termo de pesquisa
-            string urlPesquisa = $"https://www.google.com/search?q={termoPesquisa}&tbm=isch";
+            string urlPesquisa = $"https://www.google.com/search?q={HttpUtility.UrlEncode(termoPesquisa)}&tbm=isch";
+
+            // Abra a URL no navegador padrão
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = urlPesquisa,
+                UseShellExecute = true
+            });
+        }
+
+        private void PesquisaYoutubeWeb()
+        {
+            if (_filmeSelecionado == null || _filmeSelecionado.FileInfo == null) return;
+
+            string valor = string.IsNullOrEmpty(txbNome.Text.Replace(" ", "")) ? System.IO.Path.GetFileNameWithoutExtension(_filmeSelecionado.FileInfo.Name) : txbNome.Text;
+
+            //da prioridade pro nome do filme mas se for nulo pesquisa pelo nome do arquivo
+            string termoPesquisa = $"trailer {valor}";
+
+            // Construa a URL de pesquisa do Google Imagens com o termo de pesquisa
+            string urlPesquisa = $"https://www.youtube.com/results?search_query={HttpUtility.UrlEncode(valor)}";
+
+            // Abra a URL no navegador padrão
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = urlPesquisa,
+                UseShellExecute = true
+            });
+        }
+
+        private void PesquisaFilmeSinopseWeb()
+        {
+            if (_filmeSelecionado == null || _filmeSelecionado.FileInfo == null) return;
+
+            string valor = System.IO.Path.GetFileNameWithoutExtension(_filmeSelecionado.FileInfo.Name);
+
+            //da prioridade pro nome do filme mas se for nulo pesquisa pelo nome do arquivo
+            string termoPesquisa = $"Sinopse Filme {valor}";
+            // Construa a URL de pesquisa do Google Imagens com o termo de pesquisa
+            string urlPesquisa = $"https://www.google.com/search?q={HttpUtility.UrlEncode(termoPesquisa)}";
 
             // Abra a URL no navegador padrão
             Process.Start(new ProcessStartInfo
@@ -246,6 +297,8 @@ namespace FlixTubes.UI
                 //Deleta as infos com nome anterior
                 File.Delete(System.IO.Path.Combine(diretorio, nomeOld + ".json"));
             }
+
+            _filmeSelecionado.CarregarDados(fileAtual);
         }
 
         #endregion
