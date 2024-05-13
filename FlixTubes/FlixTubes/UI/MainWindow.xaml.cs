@@ -47,8 +47,8 @@ namespace FlixTubes.UI
         {
             InitializeComponent();
 
-            editarWindow.CancelarHandler += FecharEditar_Handler;
-            editarWindow.SalvarHandler += FecharEditar_Handler;
+            formWindow.CancelarHandler += FecharEditar_Handler;
+            formWindow.SalvarHandler += FecharEditar_Handler;
 
 
             _dirSelecionado = BuscarDirNoRegistro("FILMES");
@@ -73,23 +73,12 @@ namespace FlixTubes.UI
 
         private void txbPesquisar_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (ListaArquivos == null || ListaArquivos.Length == 0) return;
-
-            if (string.IsNullOrEmpty(txbPesquisar.Text))
-            {
-                ListaFiltrado = ListaArquivos;
-            }
-            else
-            {
-                ListaFiltrado = ListaArquivos.Where(o => FormataTextoPraPesquisa(o.ToLower()).Contains(FormataTextoPraPesquisa(txbPesquisar.Text.ToLower()))).ToArray();
-            }
-
-            ProcessarArquivos();
+            CarregarListaFilmes();
         }
 
         private void imgRecarregarFilmes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ProcessarArquivos();
+            CarregarListaFilmes();
         }
 
         //---- Funcoes ----//
@@ -275,10 +264,14 @@ namespace FlixTubes.UI
 
             lblDirFilme.Text = _dirSelecionado; //Exibe nas configs o dirSelecionado
 
-            //pega a lista de arquivos dentra da pasta
-            ListaArquivos = Directory.GetFiles(_dirSelecionado, "*.*", SearchOption.AllDirectories)
-                .Where(s => s.EndsWith(".mp4") || s.EndsWith(".avi") || s.EndsWith(".mkv")).OrderBy(o => o).ToArray();
+            //pega a lista de arquivos dentra da pasta co
+            ListaArquivos = Directory.GetFiles(_dirSelecionado, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".mp4") || s.EndsWith(".avi") || s.EndsWith(".mkv")).OrderBy(o => o).ToArray();
             ListaFiltrado = ListaArquivos;
+
+            if (!string.IsNullOrEmpty(txbPesquisar.Text))
+            {
+                ListaFiltrado = ListaArquivos.Where(o => FormataTextoPraPesquisa(o.ToLower()).Contains(FormataTextoPraPesquisa(txbPesquisar.Text.ToLower()))).ToArray();
+            }
 
             ProcessarArquivos();
         }
@@ -310,6 +303,8 @@ namespace FlixTubes.UI
 
         private void AbrirEdicao_Handler(object? sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(_dirSelecionado)) return;
+
             BoxArquivoView? box = sender as BoxArquivoView;
 
             if (box == null) return;
@@ -317,8 +312,9 @@ namespace FlixTubes.UI
             if (box != null)
             {
                 grdEditar.Visibility = Visibility.Visible;
-                editarWindow._filmeSelecionado = box;
-                editarWindow.CarregarDados();
+                formWindow._diretorioFilmes = _dirSelecionado;
+                formWindow.BoxSelecionado = box;
+                formWindow.CarregarDados();
             }
         }
 

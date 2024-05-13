@@ -135,7 +135,7 @@
             </ScrollViewer>
 
             <Grid x:Name="grdEditar" Grid.RowSpan="2" Background="#B2000000" Visibility="Collapsed">
-                <views:EditarPage x:Name="editarWindow" Margin="50" />
+                <views:FormularioView x:Name="formWindow" Margin="50" />
             </Grid>
         </Grid>
         <Grid x:Name="grdDetalhes" Grid.Row="1" Background="#B2000000" Visibility="Collapsed">
