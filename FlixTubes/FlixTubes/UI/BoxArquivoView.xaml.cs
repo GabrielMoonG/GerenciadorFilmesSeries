@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
+﻿using FlixTubes.Helpers;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace FlixTubes.UI
 {
@@ -47,22 +47,12 @@ namespace FlixTubes.UI
 
             string caminhoImagem = System.IO.Path.Combine(ArquivoFilme.DirectoryName, nome + ".jpg");
 
-            // Criar a URI da imagem com o identificador único
-            string uriImagem = "file:///" + caminhoImagem.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
-
-
             // Verifique se o arquivo existe
             if (File.Exists(caminhoImagem))
             {
-                grid.Background = null;
-
-                // Carregar imagem e atribuir ao controle Image
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad; // Carrega a imagem diretamente do arquivo sem bloqueá-lo
-                bitmap.UriSource = new Uri(uriImagem);
-                bitmap.EndInit();
-                grid.Background = new ImageBrush(bitmap) { Stretch = Stretch.UniformToFill };
+                // Criar a URI da imagem com o identificador único
+                string uriImagem = "file:///" + caminhoImagem.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
+                FuncoesUteis.CarregarImagemNoGrid(grid, uriImagem, Stretch.UniformToFill);
             }
         }
 
