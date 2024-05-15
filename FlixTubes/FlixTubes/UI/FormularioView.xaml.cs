@@ -1,32 +1,12 @@
 ﻿using FlixTubes.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
 
 namespace FlixTubes.UI
 {
@@ -40,6 +20,7 @@ namespace FlixTubes.UI
 
         private FileInfo? _filmeSelecionado;//Arquivo do filme
         private string? _dirImagemSelecionada;//Imagem selecionada
+
 
         public FormularioView()
         {
@@ -106,7 +87,7 @@ namespace FlixTubes.UI
         {
             if (SalvarDados())
             {
-                SalvarHandler?.Invoke(this, EventArgs.Empty);
+                SalvarHandler?.Invoke(_filmeSelecionado, EventArgs.Empty);
             }
         }
 
@@ -133,8 +114,7 @@ namespace FlixTubes.UI
                 FileInfo fileInfo = new FileInfo(op.FileName);
                 if (fileInfo.Exists)
                 {
-                    _filmeSelecionado = fileInfo;
-                    CarregarDados();
+                    CarregarDados(fileInfo);
                 }
             }
         }
@@ -143,40 +123,43 @@ namespace FlixTubes.UI
 
         #region Funcoes Formulario
 
-        public void CarregarDados()
+        public void LimparVariaveis()
         {
-            if (BoxSelecionado != null)
-                _filmeSelecionado = BoxSelecionado.FileInfo;
-
-            //Se nao tem filme nao tem Dados
-            if (_filmeSelecionado == null || string.IsNullOrEmpty(_diretorioFilmes)) return;
-
+            BoxSelecionado = null;
+            _filmeSelecionado = null;
+            _diretorioFilmes = null;
             _dirImagemSelecionada = null;
-            string NomeArqFilme = System.IO.Path.GetFileNameWithoutExtension(_filmeSelecionado.Name);
+
+            txbDirArquivo.Text = "selecione um arquivo";
+            txbArquivo.Text = "";
+            txbNome.Text = "";
+            txbSinopse.Text = "";
+            txbTrailer.Text = "";
+
+            CarregarImagemNoGrid("pack://application:,,,/Resources/box/capa.jpg"); //Imagem padrao
+        }
+
+        public void CarregarDados(FileInfo arquivo)
+        {
+            _filmeSelecionado = arquivo;
+
+            string NomeArqFilme = Path.GetFileNameWithoutExtension(_filmeSelecionado.Name);
             string DirArqFilme = _filmeSelecionado.DirectoryName ?? "";
 
             //Carrega local do arquivo
             txbDirArquivo.Text = _filmeSelecionado.FullName;
-
             //Carrega nome Arquivo
             txbArquivo.Text = NomeArqFilme;
-
             //Carrega a imagem
-            FileInfo fileInfo = new FileInfo(System.IO.Path.Combine(DirArqFilme, NomeArqFilme + ".jpg")); //Mudar!
-            if (fileInfo.Exists)
+            FileInfo fileImagem = new FileInfo(Path.Combine(DirArqFilme, NomeArqFilme + ".jpg"));
+            if (fileImagem.Exists)
             {
                 // Criar a URI da imagem com o identificador único
-                string uriImagem = "file:///" + fileInfo.FullName.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
+                string uriImagem = "file:///" + fileImagem.FullName.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
                 CarregarImagemNoGrid(uriImagem);
             }
-            else
-            {
-                CarregarImagemNoGrid("pack://application:,,,/Resources/box/capa.jpg");
-            }
-
             //Carrega os infos
             InfosFilme infosFilme = InfosServicos.ReadFromJsonFile(DirArqFilme, NomeArqFilme) ?? new InfosFilme();
-
             txbNome.Text = infosFilme.Nome;
             txbSinopse.Text = infosFilme.Sinopse;
             txbTrailer.Text = infosFilme.IDVideoYoutube;
@@ -211,14 +194,14 @@ namespace FlixTubes.UI
             if (!File.Exists(System.IO.Path.Combine(diretorio_final, fileAtual.Name)))
             {
                 File.Move(fileAtual.FullName, System.IO.Path.Combine(diretorio_final, nome_do_arquivo + extensao));
-                fileAtual = new FileInfo(System.IO.Path.Combine(diretorio_final, nome_do_arquivo + extensao));
+                _filmeSelecionado = fileAtual = new FileInfo(System.IO.Path.Combine(diretorio_final, nome_do_arquivo + extensao));
             }
 
             //Verifica se alterou o nome do arquivo com o arquivo local
             if (nome_do_arquivo != System.IO.Path.GetFileNameWithoutExtension(fileAtual.Name))
             {
                 File.Move(fileAtual.FullName, System.IO.Path.Combine(diretorio_final, nome_do_arquivo + extensao));
-                fileAtual = new FileInfo(System.IO.Path.Combine(diretorio_final, nome_do_arquivo + extensao));
+                 fileAtual = new FileInfo(System.IO.Path.Combine(diretorio_final, nome_do_arquivo + extensao));
             }
 
             //Salva nova imagem
@@ -236,10 +219,10 @@ namespace FlixTubes.UI
             });
 
             //Se teve mudanca apaga os dados anteriores
-            if (BoxSelecionado != null && BoxSelecionado.FileInfo != null && BoxSelecionado.FileInfo != fileAtual)
+            if (BoxSelecionado != null && BoxSelecionado.ArquivoFilme != null && BoxSelecionado.ArquivoFilme != fileAtual)
             {
-                string nome_Old = System.IO.Path.GetFileNameWithoutExtension(BoxSelecionado.FileInfo.Name);
-                string diretorio_Old = BoxSelecionado.FileInfo.DirectoryName ?? "";
+                string nome_Old = System.IO.Path.GetFileNameWithoutExtension(BoxSelecionado.ArquivoFilme.Name);
+                string diretorio_Old = BoxSelecionado.ArquivoFilme.DirectoryName ?? "";
 
                 //Verifica a imagem 
                 if (File.Exists(System.IO.Path.Combine(diretorio_Old, nome_Old + ".jpg")))
@@ -300,6 +283,7 @@ namespace FlixTubes.UI
 
             return true;
         }
+
         static bool IsValidDirectoryName(string nome)
         {
             // Expressão regular para verificar se a string contém apenas letras, números, espaços ou traços

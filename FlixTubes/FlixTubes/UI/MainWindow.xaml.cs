@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -47,8 +48,8 @@ namespace FlixTubes.UI
         {
             InitializeComponent();
 
-            formWindow.CancelarHandler += FecharEditar_Handler;
-            formWindow.SalvarHandler += FecharEditar_Handler;
+            formWindow.CancelarHandler += FecharFormulario_Handler;
+            formWindow.SalvarHandler += SalvouFormulario_Handler;
 
 
             _dirSelecionado = BuscarDirNoRegistro("FILMES");
@@ -63,7 +64,6 @@ namespace FlixTubes.UI
 
             grdDetalhes.Visibility = Visibility.Collapsed;
         }
-
 
         #endregion
 
@@ -125,7 +125,7 @@ namespace FlixTubes.UI
                 Dispatcher.Invoke(() =>
                 {
                     BoxArquivoView novoBox = new BoxArquivoView(fileInfo);
-                    novoBox.EditarHandler += AbrirEdicao_Handler;
+                    novoBox.EditarHandler += AbrirFormulario_Handler;
                     novoBox.DetalhesHandler += AbrirDetalhes_Handler;
                     panelFilmes.Children.Add(novoBox);//adiciona o filme
                 });
@@ -288,12 +288,7 @@ namespace FlixTubes.UI
 
         #endregion
 
-        #region Edição
-
-        private void FecharEditar_Handler(object? sender, EventArgs e)
-        {
-            grdEditar.Visibility = Visibility.Collapsed;
-        }
+        #region Detalhes Filme
 
         private void FecharDetalhes_Handler(object? sender, EventArgs e)
         {
@@ -301,40 +296,79 @@ namespace FlixTubes.UI
             grdDetalhes.Children.Clear();
         }
 
-        private void AbrirEdicao_Handler(object? sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(_dirSelecionado)) return;
-
-            BoxArquivoView? box = sender as BoxArquivoView;
-
-            if (box == null) return;
-
-            if (box != null)
-            {
-                grdEditar.Visibility = Visibility.Visible;
-                formWindow._diretorioFilmes = _dirSelecionado;
-                formWindow.BoxSelecionado = box;
-                formWindow.CarregarDados();
-            }
-        }
-
         private void AbrirDetalhes_Handler(object? sender, EventArgs e)
         {
+            Dispatcher.Invoke(() =>
+            {
+                grdDetalhes.Children.Clear();
+
+                BoxArquivoView? box = sender as BoxArquivoView;
+
+                if (box == null) return;
+
+                if (box != null)
+                {
+                    DetalhesPage detalhesPage = new DetalhesPage();
+                    detalhesPage.CarregarDados(box);
+                    detalhesPage.Margin = new Thickness(50);
+                    detalhesPage.FecharHandler += FecharDetalhes_Handler;
+
+                    grdDetalhes.Children.Add(detalhesPage);
+                    grdDetalhes.Visibility = Visibility.Visible;
+                }
+            });
+        }
+
+        #endregion
+
+        #region Formulário
+
+        private void FecharFormulario_Handler(object? sender, EventArgs e)
+        {
+            grdFormulario.Visibility = Visibility.Collapsed;
+        }
+
+        private void AbrirFormulario_Handler(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_dirSelecionado))
+            {
+                System.Windows.MessageBox.Show("Configure um diretório primeiro!");
+                return;
+            }
+
+            //precisa selecionar um diretorio
+
             BoxArquivoView? box = sender as BoxArquivoView;
 
-            if (box == null) return;
+            formWindow.LimparVariaveis();
+            formWindow._diretorioFilmes = _dirSelecionado;
 
             if (box != null)
             {
-                grdDetalhes.Visibility = Visibility.Visible;
-                DetalhesPage detalhesPage = new DetalhesPage();
-                detalhesPage._boxFilmeSelecionado = box;
-                detalhesPage.CarregarDados(); detalhesPage.Margin = new Thickness(50);
-                detalhesPage.FecharHandler += FecharDetalhes_Handler;
-                grdDetalhes.Children.Add(detalhesPage);
-
+                formWindow.BoxSelecionado = box;
+                formWindow.CarregarDados(box.ArquivoFilme);
             }
+
+            //Exibe o formulario
+            grdFormulario.Visibility = Visibility.Visible;
         }
+
+        private void SalvouFormulario_Handler(object? sender, EventArgs e)
+        {
+            FileInfo? fileInfo = sender as FileInfo;
+
+            //É um novo adiciona na lista
+            if (formWindow.BoxSelecionado == null && fileInfo != null)
+            {
+                BoxArquivoView novoBox = new BoxArquivoView(fileInfo);
+                novoBox.EditarHandler += AbrirFormulario_Handler;
+                novoBox.DetalhesHandler += AbrirDetalhes_Handler;
+                panelFilmes.Children.Add(novoBox);//adiciona o filme
+            }
+
+            grdFormulario.Visibility = Visibility.Collapsed;
+        }
+
 
         #endregion
     }

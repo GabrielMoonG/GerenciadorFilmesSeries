@@ -128,13 +128,15 @@
                 </Grid>
                 <Image x:Name="imgRecarregarFilmes" Source="/FlixTubes;component/Resources/reload.png" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" MouseLeftButtonDown="imgRecarregarFilmes_MouseLeftButtonDown" Cursor="Hand" />
             </Grid>
-            <ScrollViewer Margin="0" Grid.Row="1" BorderThickness="2" VerticalScrollBarVisibility="Auto">              
+            <ScrollViewer Margin="0" Grid.Row="1" BorderThickness="2" VerticalScrollBarVisibility="Auto">
                 <WrapPanel x:Name="panelFilmes" MinWidth="1180" Orientation="Horizontal" Margin="20">
                     <views:BoxArquivoView />
                 </WrapPanel>
             </ScrollViewer>
-
-            <Grid x:Name="grdEditar" Grid.RowSpan="2" Background="#B2000000" Visibility="Collapsed">
+            <StackPanel x:Name="grdBotoesAcao" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Image x:Name="imgBtnAdicionar" Source="/FlixTubes;component/Resources/add.png" Height="50" Width="50" Margin="20" MouseLeftButtonDown="AbrirFormulario_Handler" />
+            </StackPanel>
+            <Grid x:Name="grdFormulario" Grid.RowSpan="2" Background="#B2000000" Visibility="Collapsed">
                 <views:FormularioView x:Name="formWindow" Margin="50" />
             </Grid>
         </Grid>

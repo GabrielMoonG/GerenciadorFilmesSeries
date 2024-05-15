@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FlixTubes.UI
 {
     public partial class BoxArquivoView : System.Windows.Controls.UserControl
     {
-        public FileInfo? FileInfo { get; set; }
+        public FileInfo ArquivoFilme = null!;
 
         public event EventHandler? EditarHandler;
         public event EventHandler? DetalhesHandler;
+
+        private System.Timers.Timer ClickTimer  = null!;
+        private int ClickCounter;
 
         public BoxArquivoView()
         {
@@ -38,19 +30,22 @@ namespace FlixTubes.UI
 
         public void CarregarDados(FileInfo fileInfo)
         {
-            FileInfo = fileInfo;
-            txtNomeFilme.Text = FileInfo.Name;
+            ClickTimer = new System.Timers.Timer(200);
+            ClickTimer.Elapsed += new System.Timers.ElapsedEventHandler(EvaluateClicks);
+
+            ArquivoFilme = fileInfo;
+            txtNomeFilme.Text = ArquivoFilme.Name;
             ProcurarCapa();
         }
 
         public void ProcurarCapa()
         {
-            if (FileInfo == null || string.IsNullOrEmpty(FileInfo.DirectoryName)) return;
+            if (ArquivoFilme == null || string.IsNullOrEmpty(ArquivoFilme.DirectoryName)) return;
             // Suponha que fileInfo seja seu objeto FileInfo
 
-            string nome = System.IO.Path.GetFileNameWithoutExtension(FileInfo.FullName);
+            string nome = System.IO.Path.GetFileNameWithoutExtension(ArquivoFilme.FullName);
 
-            string caminhoImagem = System.IO.Path.Combine(FileInfo.DirectoryName, nome + ".jpg");
+            string caminhoImagem = System.IO.Path.Combine(ArquivoFilme.DirectoryName, nome + ".jpg");
 
             // Criar a URI da imagem com o identificador único
             string uriImagem = "file:///" + caminhoImagem.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
@@ -67,31 +62,26 @@ namespace FlixTubes.UI
                 bitmap.CacheOption = BitmapCacheOption.OnLoad; // Carrega a imagem diretamente do arquivo sem bloqueá-lo
                 bitmap.UriSource = new Uri(uriImagem);
                 bitmap.EndInit();
-                grid.Background = new ImageBrush(bitmap){ Stretch = Stretch.UniformToFill };
+                grid.Background = new ImageBrush(bitmap) { Stretch = Stretch.UniformToFill };
             }
         }
 
         private void grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
-            {
-                PlayFilme();
-            }
-            else
-            {
-                DetalhesHandler?.Invoke(this, e);
-            }
+            ClickTimer.Stop();
+            ClickCounter++;
+            ClickTimer.Start();
         }
 
         private void imgBtnExcluir_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (FileInfo == null) return;
+            if (ArquivoFilme == null) return;
 
-            var resposta = System.Windows.MessageBox.Show($"Deseja realmente excluir é irreversivel!! \r\n {FileInfo.Name}", "Atenção", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var resposta = System.Windows.MessageBox.Show($"Deseja realmente excluir é irreversivel!! \r\n {ArquivoFilme.Name}", "Atenção", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (resposta == MessageBoxResult.Yes)
             {
-                FileInfo.Delete();
+                ArquivoFilme.Delete();
                 System.Windows.MessageBox.Show($"Deletado com Sucesso!", "Sucesso", MessageBoxButton.OK);
 
                 // Obtenha o pai deste UserControl
@@ -113,14 +103,31 @@ namespace FlixTubes.UI
 
         public void PlayFilme()
         {
-            if (FileInfo == null) return;
+            if (ArquivoFilme == null) return;
 
             // Abrir o arquivo com o programa associado
             Process.Start(new ProcessStartInfo
             {
-                FileName = FileInfo.FullName,
+                FileName = ArquivoFilme.FullName,
                 UseShellExecute = true,
             });
+        }
+
+        private void EvaluateClicks(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            ClickTimer?.Stop();
+            // Evaluate ClickCounter here
+            if (ClickCounter >= 2)
+            {
+                //Abre o filme
+                PlayFilme();
+            }
+            else
+            {
+                //Abre o detalhes
+                DetalhesHandler?.Invoke(this, e);
+            }
+            ClickCounter = 0;
         }
     }
 }

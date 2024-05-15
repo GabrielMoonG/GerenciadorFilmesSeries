@@ -1,21 +1,10 @@
-﻿using FlixTubes.Models;
+﻿using FlixTubes.Helpers;
+using FlixTubes.Models;
 using Microsoft.Web.WebView2.Core;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FlixTubes.UI
 {
@@ -23,8 +12,7 @@ namespace FlixTubes.UI
     {
         public event EventHandler? FecharHandler;
 
-        public BoxArquivoView? _boxFilmeSelecionado;
-
+        private BoxArquivoView? _boxFilmeSelecionado;
         private InfosFilme? _infosFilme;
 
         public DetalhesPage()
@@ -32,16 +20,20 @@ namespace FlixTubes.UI
             InitializeComponent();
         }
 
-        public void CarregarDados()
+        public void CarregarDados(BoxArquivoView boxArquivoView)
         {
-            if (_boxFilmeSelecionado == null || _boxFilmeSelecionado.FileInfo == null)
+            _boxFilmeSelecionado = boxArquivoView;
+
+            if (_boxFilmeSelecionado == null)
             {
-                btnFechar_MouseLeftButtonDown(null, null);// fecha tudo
+                System.Windows.MessageBox.Show("Erro ao carregar filme!");
+                btnFechar_MouseLeftButtonDown(null, null);
                 return;
             }
 
-            string dirArqFilme = _boxFilmeSelecionado.FileInfo.DirectoryName ?? "";
-            string NomeArqFilme = System.IO.Path.GetFileNameWithoutExtension(_boxFilmeSelecionado.FileInfo.Name);
+            string dirArqFilme = _boxFilmeSelecionado.ArquivoFilme.DirectoryName ?? "";
+            string NomeArqFilme = System.IO.Path.GetFileNameWithoutExtension(_boxFilmeSelecionado.ArquivoFilme.Name);
+            string uriImagem = "pack://application:,,,/Resources/box/capa.jpg";
 
             _infosFilme = InfosServicos.ReadFromJsonFile(dirArqFilme, NomeArqFilme) ?? new InfosFilme();
 
@@ -50,18 +42,14 @@ namespace FlixTubes.UI
             txtSinopse.Text = _infosFilme.Sinopse;
 
             //Carrega a imagem
-            FileInfo fileInfo = new FileInfo(System.IO.Path.Combine(dirArqFilme, NomeArqFilme + ".jpg")); //Mudar!
+            FileInfo fileInfo = new FileInfo(System.IO.Path.Combine(dirArqFilme, NomeArqFilme + ".jpg"));
             if (fileInfo.Exists)
             {
-                // Criar a URI da imagem com o identificador único
-                string uriImagem = "file:///" + fileInfo.FullName.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
-                CarregarImagemNoGrid(uriImagem);
-            }
-            else
-            {
-                CarregarImagemNoGrid("pack://application:,,,/Resources/box/capa.jpg");
+                //Criar a URI da imagem com o identificador único
+                uriImagem = "file:///" + fileInfo.FullName.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
             }
 
+            FuncoesUteis.CarregarImagemNoGrid(grdImagem, uriImagem, Stretch.UniformToFill);
             grdTrailer.Visibility = Visibility.Collapsed;
             CarregarPlayerDoYouTubeAsync();
         }
@@ -75,6 +63,7 @@ namespace FlixTubes.UI
             // Inicializa o WebView2
 
             await webView2.EnsureCoreWebView2Async();
+
 
             if (webView2.CoreWebView2 == null) return;
 
@@ -183,26 +172,16 @@ namespace FlixTubes.UI
             grdTrailer.Visibility = Visibility.Visible;
         }
 
-        private void CarregarImagemNoGrid(string dirImagem)
-        {
-            // Carregar imagem e atribuir ao controle Image
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.UriSource = new Uri(dirImagem);
-            bitmap.EndInit();
-            grdImagem.Background = new ImageBrush(bitmap) { Stretch = Stretch.UniformToFill };
-        }
-
-        private void btnFechar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void btnFechar_MouseLeftButtonDown(object? sender, MouseButtonEventArgs? e)
         {
             if (webView2?.CoreWebView2 != null)
             {
                 PararVideoYoutube();
+                webView2.Dispose();
             }
 
             _boxFilmeSelecionado = null;
-            FecharHandler?.Invoke(this, e);
+            FecharHandler?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnPlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\add.png" />
     <None Remove="Resources\box\bin.png" />
     <None Remove="Resources\box\capa.jpg" />
     <None Remove="Resources\box\chevron.png" />
@@ -23,6 +24,7 @@
     <None Remove="Resources\editar\btnSalvar.png" />
     <None Remove="Resources\editar\google.png" />
     <None Remove="Resources\editar\iconFechar.png" />
+    <None Remove="Resources\folder.png" />
     <None Remove="Resources\icone.png" />
     <None Remove="Resources\preferences.png" />
     <None Remove="Resources\reload.png" />
@@ -35,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\add.png" />
     <Resource Include="Resources\box\bin.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -71,6 +74,7 @@
     <Resource Include="Resources\editar\iconFechar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\icone.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

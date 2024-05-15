@@ -87,14 +87,11 @@
                 </LinearGradientBrush>
             </Grid.Background>
         </Grid>
-
-
         <TextBlock x:Name="txtNomeFilme" Text="Sem Nome das asd as" Foreground="White" Width="160"  HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="5" IsHitTestVisible="False" >
             <TextBlock.Effect>
                 <DropShadowEffect BlurRadius="1" Direction="315" ShadowDepth="2" Opacity="0.5"/>
             </TextBlock.Effect>
         </TextBlock>
-
         <Grid x:Name="grdBotoes" Visibility="Hidden">
             <Image x:Name="imgBtnExcluir" Source="/FlixTubes;component/Resources/box/bin.png" Height="24" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" MouseLeftButtonDown="imgBtnExcluir_MouseLeftButtonDown" >
                 <Image.Effect>
@@ -107,7 +104,6 @@
                 </Image.Effect>
             </Image>
         </Grid>
-
     </Grid>
 
 </UserControl>
