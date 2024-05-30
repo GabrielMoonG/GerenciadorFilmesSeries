@@ -42,42 +42,33 @@
             </Setter>
         </Style>
 
-
-        <Style TargetType="{x:Type ScrollBar}">
-            <Setter Property="Background" Value="#505050"/>
-            <Setter Property="BorderBrush" Value="#505050"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ScrollBar}">
-                        <Grid x:Name="Bg" SnapsToDevicePixels="true" Margin="-15,0,15,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
-                                <RowDefinition Height="0.00001*"/>
-                                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
-                            </Grid.RowDefinitions>
-                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Row="1" CornerRadius="10"/>
-                            <!--<RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}" Margin="0,0,0,-20">    
-                                <Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
-                            </RepeatButton>-->
-                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource RepeatButtonTransparent}" HorizontalAlignment="Left" Width="17"/>
-                                </Track.DecreaseRepeatButton>
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
-                                </Track.IncreaseRepeatButton>
-                                <Track.Thumb>
-                                    <Thumb Style="{StaticResource ScrollBarThumbVertical}" Margin="2"/>
-                                </Track.Thumb>
-                            </Track>
-                            <!--<RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButton}"  Margin="0,-20,0,0">    
-                                <Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
-                            </RepeatButton>-->
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ControlTemplate x:Key="TemplateScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid x:Name="Bg" SnapsToDevicePixels="true" Margin="-15,0,15,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                    <RowDefinition Height="0.00001*"/>
+                    <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                </Grid.RowDefinitions>
+                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Row="1" CornerRadius="10"/>
+                <!--<RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}" Margin="0,0,0,-20">    
+             <Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
+         </RepeatButton>-->
+                <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource RepeatButtonTransparent}" HorizontalAlignment="Left" Width="17"/>
+                    </Track.DecreaseRepeatButton>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
+                    </Track.IncreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbVertical}" Margin="0"/>
+                    </Track.Thumb>
+                </Track>
+                <!--<RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButton}"  Margin="0,-20,0,0">    
+             <Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
+         </RepeatButton>-->
+            </Grid>
+        </ControlTemplate>
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -92,29 +83,36 @@
         </Grid.RowDefinitions>
         <Grid x:Name="grdSuperior" Height="70" VerticalAlignment="Top">
             <Label Content="FLIX TUBE" Grid.Column="0" Margin="10" FontSize="30" Foreground="White" />
-            <TextBlock x:Name="btnFilmes" Text="Filmes" HorizontalAlignment="Center" Foreground="White" FontSize="30" MouseLeftButtonDown="LinkMenu_MouseLeftButtonDown" MouseLeave="LinkMenu_MouseLeave" MouseEnter="LinkMenu_MouseEnter" Cursor="Hand" >
-                <TextBlock.ToolTip>
-                    <ToolTip Content="Lista Filmes" Background="Black" Foreground="White" />
-                </TextBlock.ToolTip>
-            </TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock x:Name="btnFilmes" Text="Filmes" Foreground="White" Margin="10" FontSize="30" MouseLeftButtonDown="LinkMenu_MouseLeftButtonDown" MouseLeave="LinkMenu_MouseLeave" MouseEnter="LinkMenu_MouseEnter" Cursor="Hand" >
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="Lista Filmes" Background="Black" Foreground="White" />
+                    </TextBlock.ToolTip>
+                </TextBlock>
+                <TextBlock x:Name="btnSeries" Text="Series" Foreground="White" Margin="10" FontSize="30" MouseLeftButtonDown="LinkMenu_MouseLeftButtonDown" MouseLeave="LinkMenu_MouseLeave" MouseEnter="LinkMenu_MouseEnter" Cursor="Hand" >
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="Lista Series" Background="Black" Foreground="White" />
+                    </TextBlock.ToolTip>
+                </TextBlock>
+            </StackPanel>
             <Image x:Name="btnConfig" Source="/FlixTubes;component/Resources/setting.png" HorizontalAlignment="Right" Margin="10" MouseLeftButtonDown="LinkMenu_MouseLeftButtonDown" MouseLeave="LinkMenu_MouseLeave" MouseEnter="LinkMenu_MouseEnter" Cursor="Hand">
                 <Image.ToolTip>
                     <ToolTip Content="Configurar" Background="Black" Foreground="White"  />
                 </Image.ToolTip>
             </Image>
         </Grid>
-        <Grid x:Name="grdFilmes" Grid.Row="1" Visibility="Visible">
+        <Grid x:Name="grdFilmes" Grid.Row="1" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="70" />
                 <RowDefinition Height="*"  />
             </Grid.RowDefinitions>
-            <Grid x:Name="grdInfos" Margin="0,10,0,10">
+            <Grid x:Name="grdInfosFilmes" Margin="0,10,0,10">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,0">
                     <TextBlock Text="Filmes" Foreground="#FF8C8C8C" FontSize="30" VerticalAlignment="Center" />
                     <TextBlock x:Name="txbQtdFilmes" Text="" Foreground="White"  VerticalAlignment="Center" FontSize="30"  Margin="10,0,0,0" />
                 </StackPanel>
-                <Grid x:Name="grdPesquisar" Margin="10,0,10,0" HorizontalAlignment="Center" MinWidth="600">
-                    <TextBox x:Name="txbPesquisar" Text="" VerticalContentAlignment="Center" MaxWidth="600" FontSize="24" KeyUp="txbPesquisar_KeyUp" Padding="20,0,50,0"  >
+                <Grid x:Name="grdPesquisarFilmes" Margin="10,0,10,0" HorizontalAlignment="Center" MinWidth="600">
+                    <TextBox x:Name="txbPesquisarFilme" Text="" VerticalContentAlignment="Center" MaxWidth="600" FontSize="24" KeyUp="txbPesquisarFilme_KeyUp" Padding="20,0,50,0"  >
                         <TextBox.Resources>
                             <Style TargetType="{x:Type Border}">
                                 <Setter Property="CornerRadius" Value="20"/>
@@ -129,6 +127,13 @@
                 <Image x:Name="imgRecarregarFilmes" Source="/FlixTubes;component/Resources/reload.png" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" MouseLeftButtonDown="imgRecarregarFilmes_MouseLeftButtonDown" Cursor="Hand" />
             </Grid>
             <ScrollViewer Margin="0" Grid.Row="1" BorderThickness="2" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Background" Value="#505050"/>
+                        <Setter Property="BorderBrush" Value="#505050"/>
+                        <Setter Property="Template" Value="{StaticResource TemplateScrollBar}" />
+                    </Style>
+                </ScrollViewer.Resources>
                 <WrapPanel x:Name="panelFilmes" MinWidth="1180" Orientation="Horizontal" Margin="20">
                     <views:BoxArquivoView />
                 </WrapPanel>
@@ -140,40 +145,109 @@
                 <views:FormularioView x:Name="formWindow" Margin="50" />
             </Grid>
         </Grid>
+        <Grid x:Name="grdSeries" Grid.Row="1" Visibility="Hidden">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="*"  />
+            </Grid.RowDefinitions>
+            <Grid x:Name="grdInfosSerie" Margin="0,10,0,10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,0">
+                    <TextBlock Text="Series" Foreground="#FF8C8C8C" FontSize="30" VerticalAlignment="Center" />
+                    <TextBlock x:Name="txbQtdSeries" Text="" Foreground="White"  VerticalAlignment="Center" FontSize="30"  Margin="10,0,0,0" />
+                </StackPanel>
+                <Grid x:Name="grdPesquisarSeries" Margin="10,0,10,0" HorizontalAlignment="Center" MinWidth="600">
+                    <TextBox x:Name="txbPesquisarSerie" Text="" VerticalContentAlignment="Center" MaxWidth="600" FontSize="24" KeyUp="txbPesquisarSerie_KeyUp" Padding="20,0,50,0"  >
+                        <TextBox.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="20"/>
+                            </Style>
+                        </TextBox.Resources>
+                        <TextBox.ToolTip>
+                            <ToolTip Content="Pesquisar em Filmes" Background="Black"  Foreground="White"  />
+                        </TextBox.ToolTip>
+                    </TextBox>
+                    <Image Source="/FlixTubes;component/Resources/search.png" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" />
+                </Grid>
+                <Image x:Name="imgRecarregarSerie" Source="/FlixTubes;component/Resources/reload.png" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" MouseLeftButtonDown="imgRecarregarSerie_MouseLeftButtonDown" Cursor="Hand" />
+            </Grid>
+            <ScrollViewer Margin="0" Grid.Row="1" BorderThickness="2" VerticalScrollBarVisibility="Auto" >
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Background" Value="#505050"/>
+                        <Setter Property="BorderBrush" Value="#505050"/>
+                        <Setter Property="Template" Value="{StaticResource TemplateScrollBar}" />
+                    </Style>
+                </ScrollViewer.Resources>
+                <WrapPanel x:Name="panelSeries" MinWidth="1180" Orientation="Horizontal" Margin="20">
+                    <views:BoxArquivoView />
+                </WrapPanel>
+            </ScrollViewer>
+        </Grid>
         <Grid x:Name="grdDetalhes" Grid.Row="1" Background="#B2000000" Visibility="Collapsed">
         </Grid>
-        <Grid x:Name="grdConfig" Grid.Row="1" Visibility="Hidden">
-            <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border BorderThickness="2" BorderBrush="#FF8C8C8C" CornerRadius="10">
-                    <Grid Height="250" Width="600">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="60" />
-                        </Grid.RowDefinitions>
-                        <Grid>
-                            <TextBlock Text="Diretório de Filmes" Foreground="White" HorizontalAlignment="Center" FontSize="20" />
-                            <Line X1="0" X2="300" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="White" StrokeThickness="3" Margin="0,0,0,0" />
-                        </Grid>
-                        <Grid  Grid.Row="1" Background="#19868686">
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="selecione o diretório dos filmes para carregar." HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF8C8C8C" FontSize="15" Margin="10,0,0,0" />
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="/FlixTubes;component/Resources/folder.png" HorizontalAlignment="Left" Height="40" Width="40" Margin="10,0,0,0" />
-                                    <TextBlock x:Name="lblDirFilme" Text="nenhum selecionado"  VerticalAlignment="Center" Margin="10,0,10,0" Foreground="White" TextWrapping="WrapWithOverflow" FontSize="20" />
+        <Grid x:Name="grdConfig" Grid.Row="1" Visibility="Visible">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border BorderThickness="2" BorderBrush="#FF8C8C8C" CornerRadius="10"  Margin="10">
+                        <Grid Height="250" Width="600">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="60" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="60" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <TextBlock Text="Diretório de Filmes" Foreground="White" HorizontalAlignment="Center" FontSize="20" />
+                                <Line X1="0" X2="300" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="White" StrokeThickness="3" Margin="0,0,0,0" />
+                            </Grid>
+                            <Grid  Grid.Row="1" Background="#19868686">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="selecione o diretório dos filmes para carregar." HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF8C8C8C" FontSize="15" Margin="10,0,0,0" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="/FlixTubes;component/Resources/folder.png" HorizontalAlignment="Left" Height="40" Width="40" Margin="10,0,0,0" />
+                                        <TextBlock x:Name="lblDirFilme" Text="nenhum selecionado"  VerticalAlignment="Center" Margin="10,0,10,0" Foreground="White" TextWrapping="WrapWithOverflow" FontSize="20" />
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
+                            </Grid>
+                            <Button x:Name="btnConfigFilme" Content="Selecionar" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,30,10" VerticalAlignment="Bottom" Height="40" Width="120" Foreground="White" Background="#FF171717" FontWeight="Bold"  Click="btnConfig_Click">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="15"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
                         </Grid>
-                        <Button x:Name="btnConfigFilme" Content="Selecionar" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,30,10" VerticalAlignment="Bottom" Height="40" Width="120" Foreground="White" Background="#FF171717" FontWeight="Bold"  Click="btnConfigFilme_Click">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="15"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-                    </Grid>
-                </Border>
-            </WrapPanel>
+                    </Border>
+                    <Border BorderThickness="2" BorderBrush="#FF8C8C8C" CornerRadius="10" Margin="10">
+                        <Grid Height="250" Width="600">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="60" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="60" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <TextBlock Text="Diretório de Séries" Foreground="White" HorizontalAlignment="Center" FontSize="20" />
+                                <Line X1="0" X2="300" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="White" StrokeThickness="3" Margin="0,0,0,0" />
+                            </Grid>
+                            <Grid  Grid.Row="1" Background="#19868686">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="selecione o diretório das series para carregar." HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF8C8C8C" FontSize="15" Margin="10,0,0,0" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="/FlixTubes;component/Resources/folder.png" HorizontalAlignment="Left" Height="40" Width="40" Margin="10,0,0,0" />
+                                        <TextBlock x:Name="lblDirSerie" Text="nenhum selecionado"  VerticalAlignment="Center" Margin="10,0,10,0" Foreground="White" TextWrapping="WrapWithOverflow" FontSize="20" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                            <Button x:Name="btnConfigSerie" Content="Selecionar" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,30,10" VerticalAlignment="Bottom" Height="40" Width="120" Foreground="White" Background="#FF171717" FontWeight="Bold"  Click="btnConfig_Click">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="15"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </WrapPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>

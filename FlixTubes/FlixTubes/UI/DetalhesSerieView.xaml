@@ -5,6 +5,197 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FlixTubes.UI"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <!-- Template para o ToggleButton do ComboBox -->
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+            <Grid Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ContentPresenter Grid.Column="0" Content="{TemplateBinding Content}" Margin="5,0,0,0"/>
+                <Path x:Name="Arrow" Grid.Column="1" Fill="White" 
+              Data="M 0 0 L 8 8 L 16 0 Z" 
+               Height="12" 
+              HorizontalAlignment="Right"
+              Margin="0,5,15,0"/>
+            </Grid>
+        </ControlTemplate>
+
+        <!-- Estilo para o ComboBox -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#FF2B2B2B"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="10">
+                                <ToggleButton x:Name="ToggleButton"
+                                              Template="{StaticResource ComboBoxToggleButton}"
+                                              Focusable="false"
+                                              IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                              ClickMode="Press"
+                                              Background="Transparent"
+                                              BorderThickness="0">
+                                    <ContentPresenter Name="ContentSite"
+                                                      IsHitTestVisible="False"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                      Margin="3,3,23,3"
+                                                      TextBlock.Foreground="White" 
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"/>
+                                </ToggleButton>
+                            </Border>
+                            <Popup Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown"
+                                      SnapsToDevicePixels="True"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder"
+                                            Background="Black"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="1"/>
+                                    <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Resources>
+                            <!-- Estilo para os itens do ComboBox -->
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ControlTemplate.Resources>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="Gray"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsDropDownOpen" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para os itens do ComboBox -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="DarkGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+        <Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Background" Value="#505050"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" CornerRadius="10"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ScrollBarThumbVertical" TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Margin" Value="3"/>
+
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="rectangle" Background="#FF2B2B2B" Height="{TemplateBinding Height}" SnapsToDevicePixels="True" Width="{TemplateBinding Width}" CornerRadius="8"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="rectangle" Value="Black"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="true">
+                                <Setter Property="Background" TargetName="rectangle" Value="Black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Template para ScrollBar -->
+        <ControlTemplate x:Key="TemplateScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid x:Name="Bg" SnapsToDevicePixels="true" Margin="0,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                    <RowDefinition Height="0.00001*"/>
+                    <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                </Grid.RowDefinitions>
+                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Row="1" CornerRadius="10"/>
+                <!--<RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}" Margin="0,0,0,-20">    
+             <Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
+         </RepeatButton>-->
+                <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource RepeatButtonTransparent}" HorizontalAlignment="Left" Width="17"/>
+                    </Track.DecreaseRepeatButton>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
+                    </Track.IncreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbVertical}" Margin="0"/>
+                    </Track.Thumb>
+                </Track>
+                <!--<RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButton}"  Margin="0,-20,0,0">    
+             <Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>    
+         </RepeatButton>-->
+            </Grid>
+        </ControlTemplate>
+    </UserControl.Resources>
+
     <Grid MinHeight="450" MinWidth="800">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*" />
@@ -15,7 +206,6 @@
                 <ImageBrush ImageSource="/FlixTubes;component/Resources/box/capa.jpg" Stretch="UniformToFill" />
             </Grid.Background>
         </Grid>
-
         <Grid x:Name="grdDados" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60px" />
@@ -28,66 +218,35 @@
             </ScrollViewer>
             <Grid Grid.Row="2"  Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50px" />
+                    <RowDefinition Height="60px" />
                     <RowDefinition Height="100*" />
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Background="red" CornerRadius="10,10,0,0">
+                <Border Grid.Row="0" Background="Black" CornerRadius="10,10,0,0">
                     <Grid>
-                        <ComboBox x:Name="cbxTemporada" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Height="30" Width="130" Foreground="White">
-                            <ComboBox.Style>
-                                <Style TargetType="{x:Type ComboBox}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type ComboBox}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition MaxWidth="18"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBox Name="PART_EditableTextBox" Grid.ColumnSpan="2" Padding="5,0,0,0" Height="{TemplateBinding Height}">
-                                                        <TextBox.Style>
-                                                            <Style TargetType="{x:Type TextBox}">
-                                                                <Setter Property="Template">
-                                                                    <Setter.Value>
-                                                                        <ControlTemplate TargetType="{x:Type TextBox}">
-                                                                            <Grid>
-                                                                                <Border CornerRadius="5,5,5,5" BorderThickness="0" Background="#FF2B2B2B">
-                                                                                    <ScrollViewer x:Name="PART_ContentHost"/>
-                                                                                </Border>
-                                                                            </Grid>
-                                                                        </ControlTemplate>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                            </Style>
-                                                        </TextBox.Style>
-                                                    </TextBox>
-                                                    <ToggleButton Grid.Column="1" Margin="0" Background="Transparent" BorderThickness="0" Height="{TemplateBinding Height}" Focusable="False" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press">
-                                                        <Path Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="top" Data="M 0 0 L 4 4 L 8 0 Z" Fill="White" />
-                                                    </ToggleButton>
-                                                    <ContentPresenter Name="ContentSite" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0"/>
-                                                    <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
-                                                        <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                                            <Border  x:Name="DropDownBorder" BorderThickness="0"  CornerRadius="5" Background="White" BorderBrush="Black"/>
-                                                            <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
-                                                            </ScrollViewer>
-                                                        </Grid>
-                                                    </Popup>
-                                                </Grid>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ComboBox.Style>
+                        <ComboBox x:Name="cbxTemporada" DisplayMemberPath="Name" TextBlock.FontSize="25"  VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5" Height="50" SelectionChanged="cbxTemporada_SelectionChanged" >
                             <ComboBoxItem Content="1º TEMPORADA" IsSelected="True"></ComboBoxItem>
-                            <ComboBoxItem Content="2º TEMPORADA" IsSelected="False"></ComboBoxItem>
+                            <ComboBoxItem Content="2º TEMPORADA" IsSelected="True"></ComboBoxItem>
                         </ComboBox>
                     </Grid>
                 </Border>
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <ListView x:Name="lstEpisodios" BorderThickness="0" Background="#FF5B5B5B"></ListView>
+                    <ScrollViewer.Resources>
+                        <Style TargetType="ScrollBar">
+                            <Setter Property="Background" Value="#505050"/>
+                            <Setter Property="BorderBrush" Value="#505050"/>
+                            <Setter Property="Template" Value="{StaticResource TemplateScrollBar}" />
+                        </Style>
+                    </ScrollViewer.Resources>
+
+                    <ListView x:Name="lstEpisodios" DisplayMemberPath="Name" BorderThickness="0" TextBlock.FontSize="25" Background="#FF5B5B5B" SelectionChanged="lstEpisodios_SelectionChanged"></ListView>
                 </ScrollViewer>
             </Grid>
         </Grid>
+
+        <Image x:Name="btnFechar" Grid.Column="1" Source="/FlixTubes;component/Resources/detalhes/close.png" Width="30" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Stretch="UniformToFill" Margin="10" MouseLeftButtonDown="btnFechar_MouseLeftButtonDown">
+            <Image.Effect>
+                <DropShadowEffect BlurRadius="2" ShadowDepth="1"/>
+            </Image.Effect>
+        </Image>
     </Grid>
 </UserControl>

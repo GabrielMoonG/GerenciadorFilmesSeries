@@ -35,7 +35,7 @@ namespace FlixTubes.UI
             string NomeArqFilme = System.IO.Path.GetFileNameWithoutExtension(_boxFilmeSelecionado.ArquivoFilme.Name);
             string uriImagem = "pack://application:,,,/Resources/box/capa.jpg";
 
-            _infosFilme = InfosServicos.ReadFromJsonFile(dirArqFilme, NomeArqFilme) ?? new InfosFilme();
+            _infosFilme = InfosServicos.ReadFromJsonFile<InfosFilme>(dirArqFilme, NomeArqFilme) ?? new InfosFilme();
 
             txtTitulo.Text = _infosFilme.Nome ?? NomeArqFilme;
             txtTitulo.Visibility = Visibility.Visible;

@@ -10,6 +10,7 @@ namespace FlixTubes.UI
     public partial class BoxArquivoView : System.Windows.Controls.UserControl
     {
         public FileInfo ArquivoFilme = null!;
+        public DirectoryInfo DiretorioSerie = null!;
 
         public event EventHandler? EditarHandler;
         public event EventHandler? DetalhesHandler;
@@ -25,8 +26,26 @@ namespace FlixTubes.UI
         public BoxArquivoView(FileInfo file)
         {
             InitializeComponent();
-            CarregarDados(file);
+
+            if (file != null)
+            {
+                CarregarDados(file);
+            }
         }
+
+        public BoxArquivoView(DirectoryInfo diretorioSerie)
+        {
+            InitializeComponent();
+
+            if (diretorioSerie != null)
+            {
+                CarregarDados(diretorioSerie);
+
+                imgBtnExcluir.Visibility = Visibility.Collapsed; //esconde o excluir pq é serie
+            }
+        }
+
+        #region Filme
 
         public void CarregarDados(FileInfo fileInfo)
         {
@@ -34,33 +53,8 @@ namespace FlixTubes.UI
             ClickTimer.Elapsed += new System.Timers.ElapsedEventHandler(EvaluateClicks);
 
             ArquivoFilme = fileInfo;
-            txtNomeFilme.Text = ArquivoFilme.Name;
-            ProcurarCapa();
-        }
-
-        public void ProcurarCapa()
-        {
-            if (ArquivoFilme == null || string.IsNullOrEmpty(ArquivoFilme.DirectoryName)) return;
-            // Suponha que fileInfo seja seu objeto FileInfo
-
-            string nome = System.IO.Path.GetFileNameWithoutExtension(ArquivoFilme.FullName);
-
-            string caminhoImagem = System.IO.Path.Combine(ArquivoFilme.DirectoryName, nome + ".jpg");
-
-            // Verifique se o arquivo existe
-            if (File.Exists(caminhoImagem))
-            {
-                // Criar a URI da imagem com o identificador único
-                string uriImagem = "file:///" + caminhoImagem.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
-                FuncoesUteis.CarregarImagemNoGrid(grid, uriImagem, Stretch.UniformToFill);
-            }
-        }
-
-        private void grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            ClickTimer.Stop();
-            ClickCounter++;
-            ClickTimer.Start();
+            txtNome.Text = ArquivoFilme.Name;
+            ProcurarCapa(ArquivoFilme.DirectoryName, Path.GetFileNameWithoutExtension(ArquivoFilme.FullName));
         }
 
         private void imgBtnExcluir_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -84,11 +78,6 @@ namespace FlixTubes.UI
                     parent.Children.Remove(this);
                 }
             }
-        }
-
-        private void imgBtnEditar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            EditarHandler?.Invoke(this, e);
         }
 
         public void PlayFilme()
@@ -118,6 +107,58 @@ namespace FlixTubes.UI
                 DetalhesHandler?.Invoke(this, e);
             }
             ClickCounter = 0;
+        }
+
+        #endregion
+
+        #region Serie
+
+        public void CarregarDados(DirectoryInfo fileInfo)
+        {
+            DiretorioSerie = fileInfo;
+            txtNome.Text = DiretorioSerie.Name;
+
+            ProcurarCapa(DiretorioSerie.FullName, DiretorioSerie.Name);
+        }
+
+        #endregion
+
+        public void ProcurarCapa(string? diretorio, string? nome)
+        {
+            if (string.IsNullOrEmpty(diretorio) || string.IsNullOrEmpty(nome)) return;
+            // Suponha que fileInfo seja seu objeto FileInfo
+
+            string caminhoImagem = System.IO.Path.Combine(diretorio, nome + ".jpg");
+
+            // Verifique se o arquivo existe
+            if (File.Exists(caminhoImagem))
+            {
+                // Criar a URI da imagem com o identificador único
+                string uriImagem = "file:///" + caminhoImagem.Replace("\\", "/") + "?" + DateTime.Now.Ticks;
+                FuncoesUteis.CarregarImagemNoGrid(grid, uriImagem, Stretch.UniformToFill);
+            }
+        }
+
+        private void grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Se nao tiver clickTime é pq é serie e tem q mostrar o detalhes
+            if (ClickTimer == null)
+            {
+                DetalhesHandler?.Invoke(this, e);
+                return;
+            }
+            //Se tiver é pq é filme e ai conta os clicks
+            else
+            {
+                ClickTimer.Stop();
+                ClickCounter++;
+                ClickTimer.Start();
+            }
+        }
+
+        private void imgBtnEditar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            EditarHandler?.Invoke(this, e);
         }
     }
 }

@@ -87,7 +87,7 @@
                 </LinearGradientBrush>
             </Grid.Background>
         </Grid>
-        <TextBlock x:Name="txtNomeFilme" Text="Sem Nome das asd as" Foreground="White" Width="160"  HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="5" IsHitTestVisible="False" >
+        <TextBlock x:Name="txtNome" Text="Sem Nome das asd as" Foreground="White" Width="160"  HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="5" IsHitTestVisible="False" >
             <TextBlock.Effect>
                 <DropShadowEffect BlurRadius="1" Direction="315" ShadowDepth="2" Opacity="0.5"/>
             </TextBlock.Effect>

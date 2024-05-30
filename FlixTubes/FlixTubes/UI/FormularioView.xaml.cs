@@ -159,7 +159,7 @@ namespace FlixTubes.UI
                 CarregarImagemNoGrid(uriImagem);
             }
             //Carrega os infos
-            InfosFilme infosFilme = InfosServicos.ReadFromJsonFile(DirArqFilme, NomeArqFilme) ?? new InfosFilme();
+            InfosFilme infosFilme = InfosServicos.ReadFromJsonFile<InfosFilme>(DirArqFilme, NomeArqFilme) ?? new InfosFilme();
             txbNome.Text = infosFilme.Nome;
             txbSinopse.Text = infosFilme.Sinopse;
             txbTrailer.Text = infosFilme.IDVideoYoutube;
