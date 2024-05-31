@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FlixTubes"
              mc:Ignorable="d">
-    <Grid x:Name="grid" Height="295" Width="175"  Margin="5,9,5,9" SnapsToDevicePixels="True">
+    <Grid x:Name="grid" Height="300" Width="180"  Margin="0,0,0,0" SnapsToDevicePixels="True">
         <Grid.RenderTransform>
-            <ScaleTransform ScaleX="1" ScaleY="1" />
+            <ScaleTransform ScaleX="0.97" ScaleY="0.97" />
         </Grid.RenderTransform>
         <Grid.RenderTransformOrigin>
             <Point X="0.5" Y="0.5" />
@@ -52,9 +52,9 @@
                 <BeginStoryboard>
                     <Storyboard>
                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                             To="1.1" Duration="0:0:0.1" />
+                                             To="1.0" Duration="0:0:0.1" />
                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                             To="1.1" Duration="0:0:0.1" />
+                                             To="1.0" Duration="0:0:0.1" />
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
@@ -71,14 +71,13 @@
                 <BeginStoryboard>
                     <Storyboard>
                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                 To="1.0" Duration="0:0:0:0.1" />
+                                 To="0.97" Duration="0:0:0:0.1" />
                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                 To="1.0" Duration="0:0:0:0.1" />
+                                 To="0.97" Duration="0:0:0:0.1" />
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
         </Grid.Triggers>
-
         <Grid x:Name="grdAbrir" Opacity="1" MouseLeftButtonDown="grid_MouseLeftButtonDown" Cursor="Hand">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -105,5 +104,4 @@
             </Image>
         </Grid>
     </Grid>
-
 </UserControl>
